@@ -19,5 +19,6 @@
   },
   "homepage": "https://github.com/L0DESTAR7/PROJECT-Spypet#readme",
   "dependencies": {
+    "express": "^4.18.2"
   }
 }
