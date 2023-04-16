@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id     Int      @id @default(autoincrement())
+  email  String   @unique
+  name   String
+  Device Device[]
+  Order  Order[]
+}
+
+model Device {
+  id              Int               @id @default(autoincrement())
+  name            String
+  model           String            @default("MK1")
+  user_id         Int
+  owner           User              @relation(fields: [user_id], references: [id])
+  Order           Order[]
+  Connection_Pool Connection_Pool[]
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  type        String
+  params      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  periodicity String   @default("WEEKLY")
+  programedAt DateTime
+  forwarded   Boolean  @default(false)
+  author_id   Int
+  device_id   Int
+  author      User     @relation(fields: [author_id], references: [id])
+  device      Device   @relation(fields: [device_id], references: [id])
+}
+
+model Connection_Pool {
+  id            Int      @id @default(autoincrement())
+  device_id     Int
+  establishedAt DateTime @default(now())
+  device        Device   @relation(fields: [device_id], references: [id])
+}
