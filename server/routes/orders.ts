@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { validateOrderReq } from '../middleware/validators/orders/orderValidator';
 import { parseOrderReq } from '../middleware/parsers/orders/orderParser';
-import { createOrder } from '../middleware/db_op/createOrder';
+import { createOrder } from '../middleware/db_ops/createOrder';
 import io from '../index';
 
 const router = express.Router();
