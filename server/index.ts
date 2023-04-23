@@ -5,6 +5,9 @@ import dataRouter from './routes/data';
 import mediaRouter from './routes/media';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
+import auth_routes from './routes/JWT_Auth/auth_routes';
+import passport from 'passport';
+import pass from './middleware/hooks/auth_hooks/passport';
 
 
 const app = express();
@@ -13,13 +16,17 @@ const io = new Server(httpServer, {});
 
 app.use(bodyParser.json());
 
+app.use(passport.initialize());
+pass(passport);
+
 app.get('/', (req: Request, res: Response) => {
   res.send("SPIN");
 });
 
-app.use('/orders', ordersRouter);
-app.use('/data', dataRouter);
-app.use('/media', mediaRouter);
+app.use('/orders', passport.authenticate('jwt', { session: false }), ordersRouter);
+app.use('/data', passport.authenticate('jwt', { session: false }), dataRouter);
+app.use('/media', passport.authenticate('jwt', { session: false }), mediaRouter);
+app.use(auth_routes);
 
 io.on("connection", (socket) => {
   socket.emit("hello", "hamid from server");
