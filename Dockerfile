@@ -8,4 +8,8 @@ RUN npm install
 
 COPY . .
 
-ENTRYPOINT [ "/startup.sh" ]
+COPY ./server_startup.sh ./server_startup.sh
+
+RUN sed -i 's/\r$//' server_startup.sh # This deals with annoying pesky dog windows carriage returns >:(
+
+ENTRYPOINT [ "./server_startup.sh" ]
