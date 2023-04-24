@@ -12,3 +12,12 @@ services:
       - "5432:5432"
     volumes:
       - ./db:/var/lib/postgresql/data
+
+  server:
+    build: .
+    working_dir: /server
+    restart: always
+    ports:
+       - "8080:8080"
+    environment:
+      DOCKER: "true"
