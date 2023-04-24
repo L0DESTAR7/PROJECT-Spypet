@@ -8,13 +8,6 @@ import { createServer } from 'http';
 import auth_routes from './routes/JWT_Auth/auth_routes';
 import passport from 'passport';
 import pass from './middleware/hooks/auth_hooks/passport';
-import dotenv from 'dotenv';
-
-dotenv.config();
-const isDocker = process.env.DOCKER === "true";
-const dbHostname = isDocker ? "db" : "localhost";
-
-process.env.DB_HOSTNAME = dbHostname;
 
 
 const app = express();

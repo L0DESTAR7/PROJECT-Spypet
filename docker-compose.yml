@@ -15,9 +15,11 @@ services:
 
   server:
     build: .
+    depends_on:
+      - db
     working_dir: /server
-    restart: always
     ports:
-       - "8080:8080"
+      - "8080:8080"
     environment:
-      DOCKER: "true"
+      DB_HOSTNAME: db
+    tty: true

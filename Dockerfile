@@ -8,5 +8,4 @@ RUN npm install
 
 COPY . .
 
-RUN npm start
-
+ENTRYPOINT [ "/startup.sh" ]
