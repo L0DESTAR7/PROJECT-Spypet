@@ -8,16 +8,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: tsathamid
       POSTGRES_DB: dockerDB
+      PGDATA: /var/lib/postgresql/data/spypet/
     ports:
       - "5432:5432"
     volumes:
       - ./db:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD","pg_isready", "-d", "dockerDB"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-      start_period: 80s
 
   server:
     build: .

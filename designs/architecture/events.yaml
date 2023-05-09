@@ -1,0 +1,85 @@
+server-events:
+  - connection:
+    - description: "Emitted to server endpoint upon socket connection to the server"
+    - callback:
+      - parameters: "server socket endpoint"
+      - tasks:
+        - "Call connection handler"
+  
+  - hello:
+    - description: "Emitted to client endpoint upon socket connection to the server"
+    - callback:
+      - parameters: "arg"
+      - tasks:
+        - "Console log arg"
+
+  - room:android-joined:
+    - description: "Broadcasted to all sockets within a room when a new android socket joins the room"
+    - data:
+      - type: "Object"
+      - fields:
+        - roomId: "String representing the roomId that has been joined which is also the users Id that's authenticated on android"
+        - deviceType: "Type of device connected. Currently only two types exist: ANDROID | RASPBERRY"
+    - callback:
+      - parameters: "arg"
+      - tasks:
+        - "Console log arg"
+
+  - room:spypet-joined:
+    - description: "Broadcasted to all sockets within a room when a new spypet socket joins the room"
+    - data:
+      - type: "Object"
+      - fields:
+        - roomId: "String representing the roomId that has been joined which is also the users Id that's authenticated on android"
+        - deviceType: "Type of device connected. Currently only two types exist: ANDROID | RASPBERRY"
+    - callback:
+      - parameters: "arg"
+      - tasks:
+        - "Console log arg"
+
+  - room:joined:
+    - description: "Emitted to the socket joining a room. This event provides no other information"
+    - data:
+      - type: "String"
+      - value: "Room joined successfully !"
+    - callback:
+      - parameters: "arg"
+      - tasks:
+        - "Console log arg"
+
+  - room:auth-error:
+    - description: "Emitted to the socket attempting to connect when auth fails. After this event is emitted, the socket connection is closed"
+    - data:
+      - type: "String"
+      - value: "Authentication error: Invalid token ! Disconecting..."
+    - callback:
+      - parameters: "arg"
+      - tasks:
+        - "Console log arg"
+
+  - room:device-id-error:
+    - description: "Emitted to the socket attempting to connect when identifier is not provided, not valid or is not associated with any user. After this event is emitted, the socket connection is closed"
+    - data:
+      - type: "String"
+      - values: 
+        - "Failed to join room. Identifier not provided."
+        - "Failed to join room. No device has such identifier."
+        - "Failed to join room. Unable to find owner user."
+    - callback:
+      - parameters: "arg"
+      - tasks:
+        - "Console log arg"
+
+    - server:weight-error:
+      - description: "Emitted to the socket sending invalid weight data."
+      - data:
+        - type: "String"
+        - values:
+          - "Invalid weight data format. Missing value field."
+          - "Invalid weight data format. Missing unit field."
+        - callback:
+          - parameters: "arg"
+          - tasks:
+            - "Console log arg"
+
+    - 

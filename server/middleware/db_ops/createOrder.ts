@@ -21,7 +21,7 @@ export const createOrder = async (req: Request, res: Response,
         connect: { id: "8db72ec5-acfd-44c4-b467-df81d668a996" }
       },
       device: {
-        connect: { id: 0 }
+        connect: { id: "4869bbd1-73f8-4476-98e8-739e184822b8" }
       }
     }
     const createOrder = await prisma.order.create({

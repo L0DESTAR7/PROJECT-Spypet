@@ -1,13 +1,15 @@
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import ordersRouter from './routes/orders';
-import dataRouter from './routes/data';
+import registerDeviceRouter from './routes/registerDevice';
 import mediaRouter from './routes/media';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
 import auth_routes from './routes/JWT_Auth/auth_routes';
 import passport from 'passport';
 import pass from './middleware/hooks/auth_hooks/passport';
+import connectionHandler from './eventHandlers/connection_handler';
+import weight_changed_handler from './eventHandlers/weight_changed_handler';
 
 
 const app = express();
@@ -24,12 +26,18 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/orders', passport.authenticate('jwt', { session: false }), ordersRouter);
-app.use('/data', passport.authenticate('jwt', { session: false }), dataRouter);
+app.use('/registerDevice', passport.authenticate('jwt', { session: false }), registerDeviceRouter);
 app.use('/media', passport.authenticate('jwt', { session: false }), mediaRouter);
 app.use(auth_routes);
 
-io.on("connection", (socket) => {
-  socket.emit("hello", "hamid from server");
+io.on("connection", async (socket) => {
+  const room_id: string | null = await connectionHandler(socket);
+  socket.on("raspberry:weight-changed", (data) => {
+    if (!room_id) {
+      socket.disconnect();
+    }
+    weight_changed_handler(socket, room_id!, data);
+  });
 });
 
 /*
