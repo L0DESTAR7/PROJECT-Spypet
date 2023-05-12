@@ -33,6 +33,7 @@ app.use(auth_routes);
 io.on("connection", async (socket) => {
   const room_id: string | null = await connectionHandler(socket);
   socket.on("raspberry:weight-changed", (data) => {
+    console.log("Hamid");	
     if (!room_id) {
       socket.disconnect();
     }
