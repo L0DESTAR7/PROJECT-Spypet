@@ -1,7 +1,7 @@
 const android_io = require('socket.io-client');
 const android_socket = android_io("http://localhost:8080", {
   auth: {
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlZDk3MzEwLTk3OGItNGUxYi1iZTBmLTdiM2E1ZDExNjIzOCIsImVtYWlsIjoieGFyaWw0ODkzM0Bzb29tYm8uY29tIiwibmFtZSI6IkhhbWlkIiwicGFzc3dvcmQiOiIkMmIkMTAkTWwzM3dVRHI2aDNkYTY1NVJkUHRUdTNxdmVHci9NVnN0RnFKckFzQ2dua0JmUEF3Q0tzZE8iLCJpYXQiOjE2ODM1OTg4MTB9.YPTshd_qZ8ppyYE2-XCn_b6fgbIZJ89V85n7qyRnuC0"
+    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU1YzdkNmUxLTU2YTktNDc2NC1hZDc0LWU1M2QxNjM3OGFiNCIsImVtYWlsIjoid2FsaWQubGFtMDlAZ21haWwuY29tIiwibmFtZSI6IldhbGlkIExhbWtvdXRhciIsInBhc3N3b3JkIjoiJDJiJDEwJHM3MkM2VVRpUmdVbmdidkZkY2o5bC5CZjRqL1NmcWV5TU9QLnRkcnNULmFqSmo3ZnpibHFHIiwiaWF0IjoxNjgzOTMzMDIzfQ.7gMvj27JeJeQ3ZH8BGqV5-XEp4M1Ew_ueSsWKzRoT0E"
   },
   extraHeaders: {
     "spypet-device-type": "ANDROID"

@@ -32,6 +32,7 @@ app.use(auth_routes);
 
 io.on("connection", async (socket) => {
   const room_id: string | null = await connectionHandler(socket);
+  console.log("HAMID 1");
   socket.on("raspberry:weight-changed", (data) => {
     console.log("Hamid");	
     if (!room_id) {

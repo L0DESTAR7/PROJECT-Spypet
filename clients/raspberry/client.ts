@@ -4,7 +4,7 @@ const raspberry_io = require('socket.io-client');
 const raspberry_socket = raspberry_io("http://localhost:8080", {
   extraHeaders: {
     "spypet-device-type": "RASPBERRY",
-    "spypet-device-identifier": "4869bbd1-73f8-4476-98e8-739e184822b8"
+    "spypet-device-identifier": "fc07c56e-9a22-4113-a150-804ef08f6761"
   }
 });
 
@@ -22,7 +22,7 @@ raspberry_socket.on("room:android-joined", (arg) => {
 
 setInterval(() => {
   raspberry_socket.emit("raspberry:weight-changed", {
-    weight: 0,
+    value: 0,
     unit: "g",
   });
   console.log("sending weight...");
