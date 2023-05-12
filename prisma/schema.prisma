@@ -1,6 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
+// This is your Prisma schema file, learn more about it in the docs: https://pris.ly/d/prisma-schema generator client { provider = "prisma-client-js" } datasource db { provider = "postgresql" url      = env("DATABASE_URL") }
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,19 +9,20 @@ datasource db {
 }
 
 model User {
-  id     Int      @id @default(autoincrement())
-  email  String   @unique
-  name   String
-  Device Device[]
-  Order  Order[]
+  id       String   @id @default(uuid())
+  email    String   @unique
+  name     String
+  password String
+  Devices  Device[]
+  Orders   Order[]
 }
 
 model Device {
-  id              Int               @id @default(autoincrement())
-  name            String
+  id              String            @id @default(uuid())
+  name            String?
   model           String            @default("MK1")
-  user_id         Int
-  owner           User              @relation(fields: [user_id], references: [id])
+  user_id         String?
+  owner           User?             @relation(fields: [user_id], references: [id])
   Order           Order[]
   Connection_Pool Connection_Pool[]
 }
@@ -37,15 +36,15 @@ model Order {
   periodicity String   @default("WEEKLY")
   programedAt DateTime
   forwarded   Boolean  @default(false)
-  author_id   Int
-  device_id   Int
+  author_id   String
+  device_id   String
   author      User     @relation(fields: [author_id], references: [id])
   device      Device   @relation(fields: [device_id], references: [id])
 }
 
 model Connection_Pool {
   id            Int      @id @default(autoincrement())
-  device_id     Int
+  device_id     String
   establishedAt DateTime @default(now())
   device        Device   @relation(fields: [device_id], references: [id])
 }

@@ -8,7 +8,20 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: tsathamid
       POSTGRES_DB: dockerDB
+      PGDATA: /var/lib/postgresql/data/spypet/
     ports:
       - "5432:5432"
     volumes:
       - ./db:/var/lib/postgresql/data
+
+  server:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    working_dir: /server
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOSTNAME: db
+    tty: true
