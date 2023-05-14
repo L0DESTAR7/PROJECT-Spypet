@@ -82,10 +82,8 @@ fun validateForm(email: String, password: String, confirmPassword: String, name:
     return ValidationResult(showToast, toastMessage)
 }
 
-private val LocalContext = compositionLocalOf<Context> { error("No Context provided") }
-
 @Composable
-fun showToast(message: String) {
+fun showToast(message: String?) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(message) {
@@ -96,13 +94,6 @@ fun showToast(message: String) {
                 Toast.LENGTH_SHORT,
             ).show()
         }
-    }
-}
-
-@Composable
-fun ProvideContext(content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalContext provides LocalContext.current) {
-        content()
     }
 }
 

@@ -1,5 +1,7 @@
 package com.example.myapplication
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,6 +24,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -33,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -41,8 +45,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.myapplication.data.dto.PostResponse
-import com.example.myapplication.data.dto.PostsService
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.ui.theme.CadetBlue
 import com.example.myapplication.ui.theme.ColumbiaBlue
 import com.example.myapplication.ui.theme.Fulvous
@@ -54,7 +59,15 @@ import com.example.myapplication.ui.theme.notosans_light
 import com.example.myapplication.ui.theme.notosans_regular
 import com.example.myapplication.ui.theme.notosans_semibold
 import com.example.myapplication.ui.theme.textColorInput
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import org.json.JSONObject
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 class SignUp  {
@@ -65,25 +78,9 @@ class SignUp  {
     var confirmPassword by mutableStateOf("")
 
 
-    @Composable
-    fun onSubmit() {
-        // Do something with the form data
-        val validationResult = validateForm(email, password, confirmPassword, name)
-
-
-        // Use the returned object
-        if (validationResult.showToast) {
-            showToast(validationResult.toastMessage)
-        } else {
-            // Proceed with the registration logic
-            //val req = PostRequest(name = name, email = email, password = password)
-
-        }
-    }
-
     // The famous button
     @Composable
-    fun MyButton() {
+    fun MyButton(navController: NavHostController) {
         var clicked by remember { mutableStateOf(false) }
 
         Box(
@@ -105,16 +102,60 @@ class SignUp  {
         }
 
         if(clicked){
-            onSubmit()
             clicked = false
+            onSubmit(navController)
         }
 
 
     }
 
+    @SuppressLint("CoroutineCreationDuringComposition")
+    @Composable
+    fun onSubmit(navController: NavHostController) {
+        // Do something with the form data
+        val validationResult = validateForm(email, password, confirmPassword, name)
 
+        // Use the returned object
+        if (validationResult.showToast) {
+            showToast(validationResult.toastMessage)
+        } else {
+            name = name.capitalize()
+            // Proceed with the registration logic
 
-}
+            val retrofit = Retrofit.Builder()
+                .baseUrl("http://192.168.100.10:8080/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val myApi = retrofit.create(MyApi::class.java)
+
+            val requestBody = JSONObject().apply {
+                put("name", name)
+                put("email", email)
+                put("password", password)
+            }
+
+            val requestBodyObject =
+                RequestBody.create(MediaType.parse("application/json"), requestBody.toString())
+
+            GlobalScope.launch {
+                val response = withContext(Dispatchers.IO) {
+                    myApi.registerUser(requestBodyObject)
+                }
+                if (response.code() == 200) {
+                    Log.d("success", "${response.body()}")
+                    withContext(Dispatchers.Main){
+                        navController.navigate("SignIn")
+                    }
+                }
+                if (response.code() == 409 || response.code() == 500) {
+                    //showToast(response.errorBody()?.string() ?: "An error occurred")
+                    //navController.navigate("Devices")
+                }
+            }
+        }
+        }
+    }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -364,10 +405,12 @@ fun SignUp(navController: NavHostController) {
                         .padding(0.dp)
                 )
             }
-            registrationData.MyButton()
+            registrationData.MyButton(navController)
             // Container with two texts
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp, vertical = 20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 40.dp, vertical = 20.dp),
             ) {
                 Text(
                     text = "Already have an account?",
@@ -393,6 +436,11 @@ fun SignUp(navController: NavHostController) {
         }
 
     }
+
 }
+
+
+
+
 
 

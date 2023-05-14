@@ -1,5 +1,7 @@
 package com.example.myapplication
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,13 +49,69 @@ import com.example.myapplication.ui.theme.notosans_light
 import com.example.myapplication.ui.theme.notosans_regular
 import com.example.myapplication.ui.theme.notosans_semibold
 import com.example.myapplication.ui.theme.textColorInput
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import org.json.JSONObject
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+class SignIn  {
+
+    var email by mutableStateOf("")
+    var password by mutableStateOf("")
+
+    @SuppressLint("CoroutineCreationDuringComposition")
+    @Composable
+    fun onSubmit(navController: NavHostController) {
+
+        GlobalScope.launch { checkUserTest(navController,email,password) }
+
+    }
+
+
+    @Composable
+    fun MyButton(navController: NavHostController) {
+        var clicked by remember { mutableStateOf(false) }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 50.dp)
+        ) {
+            Button(
+                modifier = Modifier.align(Alignment.Center),
+                onClick = {
+                    clicked = true
+                }
+            ) {
+                Text(
+                    text = "Register"
+
+                )
+            }
+        }
+
+        if(clicked){
+            clicked = false
+            onSubmit(navController)
+        }
+
+
+    }
+
+        }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignIn(navController: NavHostController) {
 
 
-    val registrationData = remember { SignUp() }
+    val sign = remember { SignIn() }
     var passwordVisibility by remember { mutableStateOf(false) }
 
     Box(
@@ -131,8 +191,8 @@ fun SignIn(navController: NavHostController) {
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 OutlinedTextField(
-                    value = registrationData.email,
-                    onValueChange = { registrationData.email = it },
+                    value = sign.email,
+                    onValueChange = { sign.email = it },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         cursorColor = Fulvous,
                         textColor = CadetBlue,
@@ -173,7 +233,7 @@ fun SignIn(navController: NavHostController) {
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 OutlinedTextField(
-                    value = registrationData.password,
+                    value = sign.password,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         cursorColor = Fulvous,
                         textColor = CadetBlue,
@@ -181,7 +241,7 @@ fun SignIn(navController: NavHostController) {
                         focusedBorderColor = Color.Transparent
                     ),
                     singleLine = true,
-                    onValueChange = { registrationData.password = it},
+                    onValueChange = { sign.password = it},
                     placeholder = {
                         Text(
                             text = "Enter a password",
@@ -213,7 +273,38 @@ fun SignIn(navController: NavHostController) {
                         .padding(0.dp)
                 )
             }
-            registrationData.MyButton()
+          sign.MyButton(navController = navController)
         }
     }
 }
+
+    suspend fun checkUserTest(navController:NavHostController,email:String, password:String){
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.100.10:8080/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val myApi = retrofit.create(MyApi::class.java)
+
+        val requestBody = JSONObject().apply {
+            put("email", email)
+            put("password", password)
+        }
+
+        val requestBodyObject =
+            RequestBody.create(MediaType.parse("application/json"), requestBody.toString())
+
+
+        val response = withContext(Dispatchers.IO) {
+            myApi.checkUser(requestBodyObject)
+        }
+        if (response.code() == 200) {
+            Log.d("success", "${response.body()}")
+            withContext(Dispatchers.Main) {
+                navController.navigate("Devices")
+            }
+        }
+        if (response.code() == 409 || response.code() == 500) {
+
+        }
+    }
