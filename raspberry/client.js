@@ -25,6 +25,6 @@ raspberry_socket.on("room:android-joined", (arg) => {
     console.log(arg);
 });
   
-  raspberry_socket.on("room:joined", (arg) => {
+raspberry_socket.on("room:joined", (arg) => {
     startWeightWatch(raspberry_socket);
-})
+});

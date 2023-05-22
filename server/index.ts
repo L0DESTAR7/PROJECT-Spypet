@@ -9,7 +9,8 @@ import auth_routes from './routes/JWT_Auth/auth_routes';
 import passport from 'passport';
 import pass from './middleware/hooks/auth_hooks/passport';
 import connectionHandler from './eventHandlers/connection_handler';
-import weight_changed_handler from './eventHandlers/weight_changed_handler';
+import small_weight_changed_handler from './eventHandlers/small_weight_changed_handler';
+import big_weight_changed_handler from './eventHandlers/big_weight_changed_handler';
 
 
 const app = express();
@@ -33,13 +34,22 @@ app.use(auth_routes);
 io.on("connection", async (socket) => {
   const room_id: string | null = await connectionHandler(socket);
   console.log("HAMID 1");
-  socket.on("raspberry:weight-changed", (data) => {
-    console.log("Hamid");	
+  socket.on("raspberry:small-weight-changed", (data) => {
+    console.log("Hamid");
     if (!room_id) {
       socket.disconnect();
     }
-    weight_changed_handler(socket, room_id!, data);
+    small_weight_changed_handler(socket, room_id!, data);
   });
+
+  // Code duplication !!! Should be improved ASAP.
+  socket.on("raspberry:big-weight-changed", (data) => {
+    console.log("Hamid");
+    if (!room_id) {
+      socket.disconnect();
+    }
+    big_weight_changed_handler(socket, room_id!, data);
+  })
 });
 
 /*

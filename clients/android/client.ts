@@ -25,6 +25,10 @@ android_socket.on("room:spypet-joined", (arg) => {
   console.log(arg);
 })
 
-android_socket.on("raspberry:weight-changed", (arg) => {
-  console.log(arg);
+android_socket.on("raspberry:small-weight-changed", (arg) => {
+  console.log(`small-weight-changed: ${JSON.stringify(arg)}`);
+})
+
+android_socket.on("raspberry:big-weight-changed", (arg) => {
+  console.log(`big-weight-changed: ${JSON.stringify(arg)}`);
 })
