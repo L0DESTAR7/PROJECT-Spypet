@@ -20,3 +20,4 @@ try:
     print("Test : SERVOMOTEUR -> PASSED")
 except Exception:
     print("Test : SERVOMOTEUR -> FAILED")
+

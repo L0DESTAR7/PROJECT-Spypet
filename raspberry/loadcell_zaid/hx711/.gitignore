@@ -3,7 +3,6 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=vscode,visualstudiocode,visualstudio,windows,linux,c++
 
 
-bin/*
 build/*
 
 

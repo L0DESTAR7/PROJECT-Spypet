@@ -1,22 +1,26 @@
-print("EXECUTING ORDER!")
 from gpiozero import Servo
-from time import sleep
-
+import time
 from gpiozero.pins.pigpio import PiGPIOFactory
+from getOneWeight import getOneWeight
+from spinServo import spinServo
 
 factory = PiGPIOFactory()
 
-servo = Servo(12, min_pulse_width=0.5/1000, max_pulse_width=2.5/1000,pin_factory=factory)
-
-for i in range(10):
-    if(i % 2 == 0):
-        servo.min()
-        sleep(2)
+def ejectWeight(weight_to_eject):
+    if weight_to_eject > getOneWeight():
+        print("ERROR : INSUFICIENT WEIGHT IN FOOD TANK")
     else:
-        servo.max()
-        sleep(2)
+        servo = Servo(12, min_pulse_width=0.5/1000, max_pulse_width=2.5/1000,pin_factory=factory)
+        initial_weight = getOneWeight()
+        spinServo(servo, "open")
+        while True:
+            time.sleep(0.1)
+            print(getOneWeight())
+            if getOneWeight() <= initial_weight - weight_to_eject : 
+                spinServo(servo, "close")
+                break
 
-print("Done! Going back to middle")
-servo.mid()
-sleep(2)
-servo.value = None
+
+                
+
+
