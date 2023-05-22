@@ -21,9 +21,7 @@ int main(int argc, char** argv) {
     const int offset = stoi(argv[4]);
 
     SimpleHX711 hx(dataPin, clockPin, refUnit, offset);
-    /*
-    for(int i = 0; i < 1000; ++i) {
-
+    while (true){
         const Mass m = hx.weight(3);
 
         cout    << "\x1B[2J\x1B[H"
@@ -40,29 +38,8 @@ int main(int argc, char** argv) {
                 << "\t" << m.toString(Mass::Unit::OZ) << '\n'
                 << endl
         ;
-
     }
-    */
 
-    double lastMass = 0.0;
-
-    while (true) {
-        const Mass m = hx.weight(5);
-
-        if (std::abs(m.getValue() - lastMass) >= 10.0 ) {
-            if( m.getValue() > 0){
-                std::cout << m.getValue()<< std::endl;
-                
-            }
-            else{
-                std::cout << 0 << std::endl;
-            }
-            lastMass = m.getValue();
-
-            
-        }
-    }
-    
     return EXIT_SUCCESS;
 
 }
