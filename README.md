@@ -16,6 +16,7 @@ You can plan its meals from time to the quantity and even track how much it eats
 
 ![actvity](designs/uml/useCaseDiagram.svg)
 
+
 #
 ## Server
 
@@ -23,7 +24,8 @@ Built with : TS, express
 
 The server is the main interface between the mobile app and the raspberry.
 
-The server aquires orders and communicates it 
+The server and the database are seperate containers that communicate with eachother.
+
 
 ### Endpoints: 
 
@@ -68,3 +70,9 @@ Checkout [events.yaml](/designs/architecture/events.yaml)
 
 #
 ## Database
+
+The data base is powered by postgresql
+
+![actvity](designs/architecture/DBv2.png)
+
+
