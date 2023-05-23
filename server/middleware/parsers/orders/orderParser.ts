@@ -1,5 +1,7 @@
 import { Response, Request, NextFunction } from 'express';
 import Order from '../../../types/order';
+import verifyUserToken from '../../../helpers/verifyUserToken';
+import DecodedUser from '../../../types/DecodedUser';
 
 
 // WARNING: Many Nest if-else blocks !!! This should be
@@ -9,6 +11,9 @@ export const parseOrderReq = (req: Request, res: Response,
 
   console.log("I got into parseOrderReq");
   let order: Order = req.body;
+  const token: string = req.headers['authorization']!.split(' ')[1];
+  const user: DecodedUser | null = verifyUserToken(token);
+  res.locals.user = user;
   console.log(`Beginning parsing of ${JSON.stringify(order)}`);
   // STEP1: Parse order type.
   //        Enums should be implemented to improve this part.

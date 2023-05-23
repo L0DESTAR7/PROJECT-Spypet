@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { PrismaClient, Prisma } from '@prisma/client';
 import Order from '../../types/order';
+import DecodedUser from '../../types/DecodedUser';
 
 
 const prisma = new PrismaClient();
@@ -10,6 +11,10 @@ export const createOrder = async (req: Request, res: Response,
   try {
     console.log("A7aa");
     const order: Order = res.locals.order;
+    const user: DecodedUser | null = res.locals.user;
+    let userID: string;
+    if (user == null) { userID = "8db72ec5-acfd-44c4-b467-df81d668a996" }
+    else { userID = user.id }
     console.log(`createOrder received following order object: ${JSON.stringify(order)}`);
     let orderCreateInput: Prisma.OrderCreateInput;
     orderCreateInput = {
@@ -18,10 +23,10 @@ export const createOrder = async (req: Request, res: Response,
       programedAt: order.programmedAt,
       periodicity: order.periodicity.toString(),
       author: {
-        connect: { id: "8db72ec5-acfd-44c4-b467-df81d668a996" }
+        connect: { id: userID }
       },
       device: {
-        connect: { id: "4869bbd1-73f8-4476-98e8-739e184822b8" }
+        connect: { id: "9a3e041f-1fe3-4be7-b6d7-39a13e82680b" }
       }
     }
     const createOrder = await prisma.order.create({
