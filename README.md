@@ -6,6 +6,17 @@ You can plan its meals from time to the quantity and even track how much it eats
 
 # Documentation
 
+## UML
+
+## User Case Diagram
+
+![usecase](designs/uml/activityDiagram.svg)
+
+## Activity Diagram
+
+![actvity](designs/uml/useCaseDiagram.svg)
+
+#
 ## Server
 
 Built with : TS, express
@@ -48,3 +59,12 @@ Register device
 POST: /registeredDevice
 ````
 
+### ServerSocket
+
+Establishes a connection with the raspberry. 
+The server listens to events emitted by the raspberry.
+
+Checkout [events.yaml](/designs/architecture/events.yaml)
+
+#
+## Database
