@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import ordersRouter from './routes/orders';
 import registerDeviceRouter from './routes/registerDevice';
 import mediaRouter from './routes/media';
+import devicesRouter from './routes/devices';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
 import auth_routes from './routes/JWT_Auth/auth_routes';
@@ -29,6 +30,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/orders', passport.authenticate('jwt', { session: false }), ordersRouter);
 app.use('/registerDevice', passport.authenticate('jwt', { session: false }), registerDeviceRouter);
 app.use('/media', passport.authenticate('jwt', { session: false }), mediaRouter);
+app.use('/devices', passport.authenticate('jwt', { session: false }), devicesRouter);
 app.use(auth_routes);
 
 io.on("connection", async (socket) => {
