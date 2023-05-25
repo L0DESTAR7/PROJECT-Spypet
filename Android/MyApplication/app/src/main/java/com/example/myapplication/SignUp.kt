@@ -58,6 +58,7 @@ import com.example.myapplication.ui.theme.montserrat
 import com.example.myapplication.ui.theme.notosans_light
 import com.example.myapplication.ui.theme.notosans_regular
 import com.example.myapplication.ui.theme.notosans_semibold
+import com.example.myapplication.ui.theme.orbitron_medium
 import com.example.myapplication.ui.theme.textColorInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -95,8 +96,10 @@ class SignUp  {
                 }
             ) {
                 Text(
-                    text = "Register"
-
+                    text = "Register",
+                    fontSize = 19.sp,
+                    color = Fulvous,
+                    fontFamily = orbitron_medium
                 )
             }
         }
@@ -407,32 +410,33 @@ fun SignUp(navController: NavHostController) {
             }
             registrationData.MyButton(navController)
             // Container with two texts
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 40.dp, vertical = 20.dp),
-            ) {
-                Text(
-                    text = "Already have an account?",
-                    color = botGray,
-                    fontFamily = notosans_semibold,
-                    fontSize = 16.sp
-                )
-                Text(
-                    text = "Sign In",
-                    color = Fulvous,
-                    fontFamily = notosans_semibold,
-                    fontSize = 16.sp,
-                    textDecoration = TextDecoration.Underline,
-                    modifier = Modifier
-                        .clickable {
-                            // Navigate to SignIn screen
-                            navController.navigate("SignIn")
-                        }
-                        .padding(start = 10.dp)
-                )
-        }
 
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(start = 55.dp, bottom = 27.dp),
+        ) {
+            Text(
+                text = "Already have an account?",
+                color = botGray,
+                fontFamily = notosans_semibold,
+                fontSize = 16.sp
+            )
+            Text(
+                text = "Sign In",
+                color = Fulvous,
+                fontFamily = notosans_semibold,
+                fontSize = 16.sp,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier
+                    .clickable {
+                        // Navigate to SignIn screen
+                        navController.navigate("SignIn")
+                    }
+                    .padding(start = 10.dp)
+            )
         }
 
     }
