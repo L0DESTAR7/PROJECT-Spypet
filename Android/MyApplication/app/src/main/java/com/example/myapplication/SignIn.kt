@@ -2,8 +2,11 @@ package com.example.myapplication
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,9 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -29,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -36,18 +42,21 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.ui.theme.CadetBlue
 import com.example.myapplication.ui.theme.ColumbiaBlue
 import com.example.myapplication.ui.theme.Fulvous
+import com.example.myapplication.ui.theme.botGray
 import com.example.myapplication.ui.theme.gradientBottom
 import com.example.myapplication.ui.theme.gradientTop
 import com.example.myapplication.ui.theme.montserrat
 import com.example.myapplication.ui.theme.notosans_light
 import com.example.myapplication.ui.theme.notosans_regular
 import com.example.myapplication.ui.theme.notosans_semibold
+import com.example.myapplication.ui.theme.orbitron_medium
 import com.example.myapplication.ui.theme.textColorInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -81,16 +90,25 @@ class SignIn  {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 50.dp)
+
         ) {
-            Button(
-                modifier = Modifier.align(Alignment.Center),
+            OutlinedButton(
+                modifier = Modifier.align(Alignment.Center).clip(shape = RoundedCornerShape(20.dp)).background(brush = Brush.verticalGradient(colors = listOf(
+                    gradientTop,
+                    gradientBottom))),
+                colors = ButtonDefaults.buttonColors(Color.Transparent),
                 onClick = {
                     clicked = true
-                }
+                },
+                //brush = Brush.verticalGradient(colors = listOf(gradientTop, gradientBottom)),
+
             ) {
                 Text(
-                    text = "Register"
-
+                    text = "Login",
+                    fontSize = 19.sp,
+                    fontFamily = orbitron_medium,
+                    color = Fulvous,
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -274,37 +292,69 @@ fun SignIn(navController: NavHostController) {
                 )
             }
           sign.MyButton(navController = navController)
+
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(start = 60.dp, bottom = 27.dp),
+        ) {
+            Text(
+                text = "Don't have an account?",
+                color = botGray,
+                fontFamily = notosans_semibold,
+                fontSize = 16.sp
+            )
+            Text(
+                text = "Sign Up",
+                color = Fulvous,
+                fontFamily = notosans_semibold,
+                fontSize = 16.sp,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier
+                    .clickable {
+                        // Navigate to SignIn screen
+                        navController.navigate("SignUp")
+                    }
+                    .padding(start = 10.dp)
+            )
         }
     }
 }
 
-    suspend fun checkUserTest(navController:NavHostController,email:String, password:String){
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.100.10:8080/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+suspend fun checkUserTest(navController: NavHostController, email: String, password: String) {
+    val retrofit = Retrofit.Builder()
+        .baseUrl("http://192.168.100.10:8080/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 
-        val myApi = retrofit.create(MyApi::class.java)
+    val myApi = retrofit.create(MyApi::class.java)
 
-        val requestBody = JSONObject().apply {
-            put("email", email)
-            put("password", password)
-        }
+    val requestBody = JSONObject().apply {
+        put("email", email)
+        put("password", password)
+    }
 
-        val requestBodyObject =
-            RequestBody.create(MediaType.parse("application/json"), requestBody.toString())
+    val requestBodyObject =
+        RequestBody.create(MediaType.parse("application/json"), requestBody.toString())
 
+    val response = withContext(Dispatchers.IO) {
+        myApi.checkUser(requestBodyObject)
+    }
 
-        val response = withContext(Dispatchers.IO) {
-            myApi.checkUser(requestBodyObject)
-        }
-        if (response.code() == 200) {
-            Log.d("success", "${response.body()}")
+    if (response.code() == 200) {
+        val tokenResponse = response.body()
+        tokenResponse?.let { token ->
+            Log.d("success", "Token: ${token.token}")
             withContext(Dispatchers.Main) {
-                navController.navigate("Devices")
+                val tokenValue = token.token
+                navController.navigate("Devices/${tokenValue}")
             }
         }
-        if (response.code() == 409 || response.code() == 500) {
-
-        }
+    } else if (response.code() == 409 || response.code() == 500) {
+        // Handle specific error codes (e.g., display an error message)
     }
+}
+
+

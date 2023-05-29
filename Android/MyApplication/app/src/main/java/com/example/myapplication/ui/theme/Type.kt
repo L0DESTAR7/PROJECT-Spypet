@@ -13,6 +13,7 @@ val montserrat = FontFamily(Font(R.font.montserrat_regular))
 val notosans_semibold = FontFamily(Font(R.font.notosans_semibold))
 val notosans_regular = FontFamily(Font(R.font.notosans_regular))
 val notosans_light = FontFamily(Font(R.font.notosans_light))
+val orbitron_medium = FontFamily(Font(R.font.orbitron_medium))
 
 // Set of Material typography styles to start with
 val Typography = Typography(
