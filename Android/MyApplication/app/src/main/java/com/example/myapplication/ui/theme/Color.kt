@@ -23,5 +23,5 @@ val ColumbiaBlue = Color(0xFFCFDBE2)
 val textColorInput = Color(0xFF1E252C)
 val botGray = Color(0xFF999EA1)
 
-val QRformColor = Color(0x8006111A)
+val QRformColor = Color(0xD906111A)
 val strokeQR = Color(0xFF637786)

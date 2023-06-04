@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -93,7 +94,8 @@ class SignUp  {
                 modifier = Modifier.align(Alignment.Center),
                 onClick = {
                     clicked = true
-                }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = gradientTop)
             ) {
                 Text(
                     text = "Register",

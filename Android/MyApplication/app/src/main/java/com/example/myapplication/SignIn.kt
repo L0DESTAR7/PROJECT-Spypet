@@ -1,7 +1,10 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -67,23 +71,25 @@ import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.logging.Handler
 
 class SignIn  {
 
     var email by mutableStateOf("")
     var password by mutableStateOf("")
 
+
     @SuppressLint("CoroutineCreationDuringComposition")
     @Composable
-    fun onSubmit(navController: NavHostController) {
+    fun onSubmit(navController: NavHostController, context: Context) {
 
-        GlobalScope.launch { checkUserTest(navController,email,password) }
+        GlobalScope.launch { checkUserTest(navController,email,password, context = context) }
 
     }
 
 
     @Composable
-    fun MyButton(navController: NavHostController) {
+    fun MyButton(navController: NavHostController, context: Context) {
         var clicked by remember { mutableStateOf(false) }
 
         Box(
@@ -115,7 +121,7 @@ class SignIn  {
 
         if(clicked){
             clicked = false
-            onSubmit(navController)
+            onSubmit(navController, context = context)
         }
 
 
@@ -131,6 +137,7 @@ fun SignIn(navController: NavHostController) {
 
     val sign = remember { SignIn() }
     var passwordVisibility by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -291,7 +298,7 @@ fun SignIn(navController: NavHostController) {
                         .padding(0.dp)
                 )
             }
-          sign.MyButton(navController = navController)
+          sign.MyButton(navController = navController, context = context)
 
         }
         Row(
@@ -323,7 +330,7 @@ fun SignIn(navController: NavHostController) {
     }
 }
 
-suspend fun checkUserTest(navController: NavHostController, email: String, password: String) {
+suspend fun checkUserTest(navController: NavHostController, email: String, password: String, context: Context) {
     val retrofit = Retrofit.Builder()
         .baseUrl("http://192.168.100.10:8080/")
         .addConverterFactory(GsonConverterFactory.create())
@@ -352,9 +359,15 @@ suspend fun checkUserTest(navController: NavHostController, email: String, passw
                 navController.navigate("Devices/${tokenValue}")
             }
         }
-    } else if (response.code() == 409 || response.code() == 500) {
+    } else if (response.code() == 409 || response.code() == 500 || response.code() == 403) {
         // Handle specific error codes (e.g., display an error message)
+                val errorMessage = response.errorBody()?.string() ?: "An error occurred"
+        android.os.Handler(Looper.getMainLooper()).post {
+            Toast.makeText(context, errorMessage.split(",")[1].split(":")[1].substring(1), Toast.LENGTH_SHORT).show()
+        }
+                //navController.navigate("Devices")
+            }
+
     }
-}
 
 

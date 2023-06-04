@@ -20,6 +20,10 @@ interface MyApi {
     @GET("devices")
     suspend fun getDevices(@Header("Authorization") token: String): Response<DevicesResponse>
 
+    //Posting an order
+    @POST("orders")
+    suspend fun sendOrder(@Body requestBody: RequestBody, @Header("Authorization") token: String): Response<OrderResponse>
+
 }
 
 data class RegistrationResponse(
@@ -41,4 +45,11 @@ data class Device(
     val name: String,
     val model: String,
     val user_id: String
+)
+
+data class OrderResponse(
+    val type: String,
+    val params: Int,
+    val programmedAt: String,
+    val periodicity: String
 )

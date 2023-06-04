@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.myapplication"
-        minSdk 23
+        minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -85,7 +85,6 @@ dependencies {
     // If you want to additionally use the CameraX Lifecycle library
     implementation("androidx.camera:camera-lifecycle:1.0.2")
     implementation("androidx.camera:camera-view:1.0.0-alpha31")
-
 
 
 

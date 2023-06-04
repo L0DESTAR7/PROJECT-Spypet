@@ -62,7 +62,7 @@ class Devices {
 
 
     @Composable
-    fun ContainerItem(text: String, navController: NavHostController) {
+    fun ContainerItem(text: String, navController: NavHostController, token: String) {
 
         var showBox by remember { mutableStateOf(false) }
 
@@ -95,7 +95,7 @@ class Devices {
                     tint = ColumbiaBlue,
                     modifier = Modifier.clickable {
                         // Handle arrow click
-                        navController.navigate("main settings")
+                        navController.navigate("main settings/${token}")
                     }
                 )
             }
@@ -206,7 +206,9 @@ class Devices {
                             } else {
                                 "Empty Slot"
                             }
-                            devices.ContainerItem(deviceName, navController)
+                            if (token != null) {
+                                devices.ContainerItem(deviceName, navController, token)
+                            }
                             Spacer(modifier = Modifier.height(30.dp)) // Add spacing between items
                         }
                     }
