@@ -26,6 +26,6 @@ router.post('/',
   (req: Request, res: Response) => {
     io.emit('order:created', JSON.stringify(res.locals.order));
     res.status(201).json(res.locals.order);
-  })
+  });
 
 export default router;

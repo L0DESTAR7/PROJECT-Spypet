@@ -77,9 +77,54 @@ server-events:
         - values:
           - "Invalid weight data format. Missing value field."
           - "Invalid weight data format. Missing unit field."
-        - callback:
-          - parameters: "arg"
-          - tasks:
-            - "Console log arg"
+      - callback:
+        - parameters: "arg"
+        - tasks:
+          - "Console log arg"
 
-    - 
+    - order:created:
+      - description: "Emitted when order creation is successfull on server side."
+      - data:
+        - type: "Object"
+        - fields:
+          - type: "String"
+          - params: "String"
+          - programmedAt: "Date"
+          - periodicity: "String"
+      - callback:
+        - parameters: "arg"
+        - tasks:
+          - "Console log arg"
+          - "Parse arg object"
+          - "Create task to fulfill order"
+
+
+raspberry-events:
+
+  - raspberry:small-weight-changed:
+    - description: "Emitted to the room where raspberry is. Contains data about small container measured weight. It is only emitted when a weight variation of over 20 grams occurs."
+    - data:
+      - type: "Object"
+      - fields:
+        - value: "Number"
+        - unit: "String"
+    - callback:
+      - parameters: [socket: Socker, room_id: string, data: WeightData]
+      - tasks:
+        - "Validate value field in object. If null emit server:small-weight-error and disconnect raspberry socket."
+        - "Validate unit field in object. If null emit server:small-weight-error and disconnect raspberry socket."
+        - "Send data to every Android in the same room as the raspberry."
+
+  - raspberry:big-weight-changed:
+    - description: "Emitted to the room where raspberry is. Contains data about big container measured weight. It is only emitted when a weight variation of over 20 grams occurs."
+    - data:
+      - type: "Object"
+      - fields:
+        - value: "Number"
+        - unit: "String"
+    - callback:
+      - parameters: [socket: Socker, room_id: string, data: WeightData]
+      - tasks:
+        - "Validate value field in object. If null emit server:big-weight-error and disconnect raspberry socket."
+        - "Validate unit field in object. If null emit server:big-weight-error and disconnect raspberry socket."
+        - "Send data to every Android in the same room as the raspberry."

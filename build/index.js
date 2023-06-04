@@ -42,7 +42,7 @@ app.use('/devices', passport_1.default.authenticate('jwt', { session: false }), 
 app.use(auth_routes_1.default);
 io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
     const room_id = yield (0, connection_handler_1.default)(socket);
-    console.log("HAMID 2");
+    console.log("HAMID 3");
     socket.on("raspberry:small-weight-changed", (data) => {
         console.log("Hamid");
         if (!room_id) {

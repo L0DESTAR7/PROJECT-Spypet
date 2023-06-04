@@ -16,6 +16,7 @@ router.get('/', (req: Request, res: Response) => {
   }
   res.locals.userID = decodedUser.id;
   console.log(`Decoded user: ${JSON.stringify(decodedUser)}`);
+  // STEP2: Get User devices and send them back.
   getDevices(req, res);
 });
 

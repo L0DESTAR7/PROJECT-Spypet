@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express'
-import io from '../index';
 import { updateDevice } from '../middleware/db_ops/updateDevice';
 import { parseDeviceRegReq } from '../middleware/parsers/registerDevice/registerDeviceParser';
 import { validateRegisterDeviceReq } from '../middleware/validators/registerDevice/deviceValidator';
